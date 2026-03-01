@@ -3,6 +3,7 @@ package com.ponto.eletronico.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "empresa")
@@ -27,6 +28,7 @@ public class Empresa {
 
     private LocalDateTime dataAtualizacao;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "empresa")
     private List<Funcionario> funcionarios;
 
@@ -82,5 +84,7 @@ public class Empresa {
     public void setFuncionarios(List<Funcionario> funcionarios) {
      this.funcionarios = funcionarios;
     }
+
+
 
 }

@@ -2,6 +2,7 @@ package com.ponto.eletronico.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "funcionarios")
@@ -13,6 +14,7 @@ public class Funcionario {
 
     @ManyToOne (optional = false)
     @JoinColumn(name = "id_empresa", nullable = false)
+    @JsonBackReference
     private Empresa empresa;
 
     @Column(nullable = false)

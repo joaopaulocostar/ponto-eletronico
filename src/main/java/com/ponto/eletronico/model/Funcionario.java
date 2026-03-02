@@ -3,6 +3,7 @@ package com.ponto.eletronico.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "funcionarios")
@@ -17,15 +18,19 @@ public class Funcionario {
     @JsonBackReference
     private Empresa empresa;
 
+    @NotBlank(message = "Nome é obrigatório")
     @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false)
     private String sobrenome;
 
+    @NotBlank(message = ("Email é obrigatório"))
+    @Email(message = "Email inválido")
     @Column(nullable = false)
     private String email;
 
+    @NotBlank(message = "Senha é obrigatória")
     @Column(nullable = false)
     private String senhaHash;
 

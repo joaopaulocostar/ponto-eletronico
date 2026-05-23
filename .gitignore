@@ -1,0 +1,22 @@
+        # Maven
+        target/
+        !.mvn/wrapper/maven-wrapper.jar
+
+        # IntelliJ IDEA
+        .idea/
+        *.iml
+
+        # Logs
+        *.log
+
+        # Mac/Linux
+        .DS_Store
+
+        # Application properties sensíveis
+        application-local.properties
+
+        # Java
+        *.class
+
+        # VSCode
+        .vscode/

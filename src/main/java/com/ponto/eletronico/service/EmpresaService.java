@@ -1,5 +1,6 @@
 package com.ponto.eletronico.service;
 
+import com.ponto.eletronico.exceptions.EmpresaNaoEncontradaException;
 import com.ponto.eletronico.repository.EmpresaRepository;
 import com.ponto.eletronico.model.Empresa;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class EmpresaService {
     }
 
     public Empresa buscarPorId(Long id){
-        return repository.findById(id).orElseThrow(()-> new RuntimeException("Empresa não encontrada"));
+        return repository.findById(id).orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada"));
     };
 
     public Empresa atualizar(Long id, Empresa empresaAtualizada ){

@@ -4,6 +4,7 @@ import com.ponto.eletronico.service.EmpresaService;
 import com.ponto.eletronico.model.Empresa;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<Empresa> salvar(@RequestBody Empresa empresa){
+    public ResponseEntity<Empresa> salvar(@RequestBody @Valid Empresa empresa){
         return ResponseEntity.ok(
                 service.salvar(empresa)
         );
@@ -36,7 +37,7 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> atualizar(@PathVariable Long id, @RequestBody Empresa empresa){
+    public ResponseEntity<Empresa> atualizar(@PathVariable Long id, @RequestBody @Valid Empresa empresa){
         return ResponseEntity.ok(service.atualizar(id, empresa));
     }
 

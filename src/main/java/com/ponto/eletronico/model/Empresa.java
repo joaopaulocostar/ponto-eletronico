@@ -1,6 +1,8 @@
 package com.ponto.eletronico.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "empresas")
@@ -11,9 +13,12 @@ public class Empresa {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "O nome é obrigatorio")
     private String nome;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "O CNPJ é obrigatório")
+    @Size(min = 14, max = 14, message = "O CNPJ deve ter 14 caracteres")
     private String cnpj;
 
     public Long getId() {

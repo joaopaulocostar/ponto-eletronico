@@ -1,5 +1,7 @@
 package com.ponto.eletronico.controller;
 
+import com.ponto.eletronico.DTO.EmpresaRequestDTO;
+import com.ponto.eletronico.DTO.EmpresaResponseDTO;
 import com.ponto.eletronico.service.EmpresaService;
 import com.ponto.eletronico.model.Empresa;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,20 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<Empresa> salvar(@RequestBody @Valid Empresa empresa){
-        return ResponseEntity.ok(
-                service.salvar(empresa)
-        );
+    public ResponseEntity<EmpresaResponseDTO> salvar(@RequestBody @Valid EmpresaRequestDTO dto){
+
+        Empresa empresa = new Empresa();
+        empresa.setNome(dto.getNome());
+        empresa.setCnpj(dto.getCnpj());
+
+        Empresa empresaSalva = service.salvar(empresa);
+        EmpresaResponseDTO response = new EmpresaResponseDTO();
+
+        response.setId(empresaSalva.getId());
+        response.setCnpj(empresaSalva.getCnpj());
+        response.setNome(empresaSalva.getNome());
+
+        return ResponseEntity.ok(response);
     }
     @GetMapping
     public ResponseEntity<List<Empresa>> listar(){

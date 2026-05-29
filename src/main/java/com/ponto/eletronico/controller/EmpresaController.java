@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,15 +38,33 @@ public class EmpresaController {
         return ResponseEntity.ok(response);
     }
     @GetMapping
-    public ResponseEntity<List<Empresa>> listar(){
-        return ResponseEntity.ok(
-            service.Listar()
-        );
+    public ResponseEntity<List<EmpresaResponseDTO>> listar(){
+        List<Empresa> empresas = service.Listar();
+        List<EmpresaResponseDTO> response = new ArrayList<>();
+
+        for(Empresa empresa: empresas){
+            EmpresaResponseDTO dto = new EmpresaResponseDTO();
+            dto.setCnpj(empresa.getCnpj());
+            dto.setId(empresa.getId());
+            dto.setNome(empresa.getNome());
+
+            response.add(dto);
+
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Empresa> buscarPorId(@PathVariable Long id){
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<EmpresaResponseDTO> buscarPorId(@PathVariable Long id){
+        Empresa empresa = service.buscarPorId(id);
+        EmpresaResponseDTO response = new EmpresaResponseDTO();
+
+        response.setNome(empresa.getNome());
+        response.setId(empresa.getId());
+        response.setCnpj(empresa.getCnpj());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

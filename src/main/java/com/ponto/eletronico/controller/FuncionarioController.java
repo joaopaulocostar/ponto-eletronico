@@ -3,6 +3,7 @@ package com.ponto.eletronico.controller;
 
 import com.ponto.eletronico.DTO.FuncionarioRequestDTO;
 import com.ponto.eletronico.DTO.FuncionarioResponseDTO;
+import com.ponto.eletronico.mapper.FuncionarioMapper;
 import com.ponto.eletronico.model.Empresa;
 import com.ponto.eletronico.model.Funcionario;
 import com.ponto.eletronico.service.EmpresaService;
@@ -10,6 +11,8 @@ import com.ponto.eletronico.service.FuncionarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,10 +21,12 @@ public class FuncionarioController {
 
     private final FuncionarioService service;
     private final EmpresaService empresaService;
+    private final FuncionarioMapper mapper;
 
-    public FuncionarioController(FuncionarioService service, EmpresaService empresaService){
+    public FuncionarioController(FuncionarioService service, EmpresaService empresaService, FuncionarioMapper mapper){
         this.service = service;
         this.empresaService = empresaService;
+        this.mapper = mapper;
     }
 
     @PostMapping
@@ -49,13 +54,19 @@ public class FuncionarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List> listar(){
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<FuncionarioResponseDTO>> listar(){
+        List<Funcionario> funcionarios = service.listar();
+        List<FuncionarioResponseDTO> response = new ArrayList<>();
+        for(Funcionario funcionario: funcionarios){
+           response.add(mapper.toResponseDTO(funcionario));
+        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Funcionario> buscarPorId(@PathVariable Long id){
-        return ResponseEntity.ok(service.buscarPorId(id));
+    public ResponseEntity<FuncionarioResponseDTO> buscarPorId(@PathVariable Long id){
+        Funcionario funcionario = service.buscarPorId(id);
+        return ResponseEntity.ok(mapper.toResponseDTO(funcionario));
     }
 
     @PutMapping("/{id}")

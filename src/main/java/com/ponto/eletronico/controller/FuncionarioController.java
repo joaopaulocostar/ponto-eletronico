@@ -1,10 +1,13 @@
 package com.ponto.eletronico.controller;
 
 
+import com.ponto.eletronico.DTO.FuncionarioRequestDTO;
+import com.ponto.eletronico.DTO.FuncionarioResponseDTO;
 import com.ponto.eletronico.model.Empresa;
 import com.ponto.eletronico.model.Funcionario;
 import com.ponto.eletronico.service.EmpresaService;
 import com.ponto.eletronico.service.FuncionarioService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -22,11 +25,26 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Funcionario> salvar(@RequestBody Funcionario funcionario){
-        Empresa empresa = empresaService.buscarPorId(funcionario.getEmpresa().getId());
+    public ResponseEntity<FuncionarioResponseDTO> salvar(@RequestBody @Valid FuncionarioRequestDTO dto){
+        Empresa empresa = empresaService.buscarPorId(dto.getEmpresaId());
+        Funcionario funcionario = new Funcionario();
+
+        funcionario.setNome(dto.getNome());
+        funcionario.setCpf(dto.getCpf());
+        funcionario.setCargo(dto.getCargo());
         funcionario.setEmpresa(empresa);
 
-        return ResponseEntity.ok(service.salvar(funcionario));
+        Funcionario funcionarioSalvo = service.salvar(funcionario);
+
+        FuncionarioResponseDTO response = new FuncionarioResponseDTO();
+
+        response.setId(funcionarioSalvo.getId());
+        response.setNome(funcionarioSalvo.getNome());
+        response.setCpf(funcionarioSalvo.getCpf());
+        response.setCargo(funcionarioSalvo.getCargo());
+        response.setEmpresa(funcionarioSalvo.getEmpresa().getNome());
+
+        return ResponseEntity.ok(response);
 
     }
 
@@ -35,8 +53,13 @@ public class FuncionarioController {
         return ResponseEntity.ok(service.listar());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Funcionario> buscarPorId(@PathVariable Long id){
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Funcionario> atualizar(@PathVariable Long id, @RequestBody Funcionario funcionario){
+    public ResponseEntity<Funcionario> atualizar(@PathVariable Long id, @RequestBody @Valid Funcionario funcionario){
         return ResponseEntity.ok(service.atualizar(id, funcionario));
     }
 

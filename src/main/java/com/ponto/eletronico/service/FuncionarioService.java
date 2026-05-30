@@ -1,6 +1,8 @@
 package com.ponto.eletronico.service;
 
 
+import com.ponto.eletronico.exceptions.CpfJaCadastradoException;
+import com.ponto.eletronico.exceptions.FuncionarioNaoEncontradoException;
 import com.ponto.eletronico.model.Funcionario;
 import com.ponto.eletronico.repository.FuncionarioRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class FuncionarioService {
 
     public Funcionario salvar(Funcionario funcionario){
         if(repository.existsByCpf(funcionario.getCpf())){
-            throw new RuntimeException("CPF já cadastrado");
+            throw new CpfJaCadastradoException(funcionario.getCpf());
         }
         return repository.save(funcionario);
     }
@@ -28,7 +30,7 @@ public class FuncionarioService {
     }
 
     public Funcionario buscarPorId(Long id){
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        return repository.findById(id).orElseThrow(() -> new FuncionarioNaoEncontradoException(id));
     }
     public Funcionario atualizar(Long id, Funcionario funcionarioAtualizado){
         Funcionario funcionario = buscarPorId(id);

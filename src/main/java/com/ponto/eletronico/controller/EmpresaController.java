@@ -2,6 +2,7 @@ package com.ponto.eletronico.controller;
 
 import com.ponto.eletronico.DTO.EmpresaRequestDTO;
 import com.ponto.eletronico.DTO.EmpresaResponseDTO;
+import com.ponto.eletronico.mapper.EmpresaMapper;
 import com.ponto.eletronico.service.EmpresaService;
 import com.ponto.eletronico.model.Empresa;
 import org.springframework.web.bind.annotation.*;
@@ -16,26 +17,19 @@ import java.util.List;
 public class EmpresaController {
 
     private final EmpresaService service;
+    private final EmpresaMapper mapper;
 
-    public EmpresaController(EmpresaService service){
-        this.service = service;
+    public EmpresaController(EmpresaService service, EmpresaMapper mapper){
+        this.service = service; this.mapper = mapper;
     }
 
     @PostMapping
     public ResponseEntity<EmpresaResponseDTO> salvar(@RequestBody @Valid EmpresaRequestDTO dto){
 
-        Empresa empresa = new Empresa();
-        empresa.setNome(dto.getNome());
-        empresa.setCnpj(dto.getCnpj());
-
+        Empresa empresa = mapper.toEntity(dto);
         Empresa empresaSalva = service.salvar(empresa);
-        EmpresaResponseDTO response = new EmpresaResponseDTO();
 
-        response.setId(empresaSalva.getId());
-        response.setCnpj(empresaSalva.getCnpj());
-        response.setNome(empresaSalva.getNome());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(mapper.toResponseDTO(empresaSalva));
     }
     @GetMapping
     public ResponseEntity<List<EmpresaResponseDTO>> listar(){
@@ -43,13 +37,7 @@ public class EmpresaController {
         List<EmpresaResponseDTO> response = new ArrayList<>();
 
         for(Empresa empresa: empresas){
-            EmpresaResponseDTO dto = new EmpresaResponseDTO();
-            dto.setCnpj(empresa.getCnpj());
-            dto.setId(empresa.getId());
-            dto.setNome(empresa.getNome());
-
-            response.add(dto);
-
+            response.add(mapper.toResponseDTO(empresa));
         }
 
         return ResponseEntity.ok(response);
@@ -58,18 +46,15 @@ public class EmpresaController {
     @GetMapping("/{id}")
     public ResponseEntity<EmpresaResponseDTO> buscarPorId(@PathVariable Long id){
         Empresa empresa = service.buscarPorId(id);
-        EmpresaResponseDTO response = new EmpresaResponseDTO();
-
-        response.setNome(empresa.getNome());
-        response.setId(empresa.getId());
-        response.setCnpj(empresa.getCnpj());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(mapper.toResponseDTO(empresa));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> atualizar(@PathVariable Long id, @RequestBody @Valid Empresa empresa){
-        return ResponseEntity.ok(service.atualizar(id, empresa));
+    public ResponseEntity<EmpresaResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid EmpresaRequestDTO dto){
+        Empresa empresa = mapper.toEntity(dto);
+        Empresa empresaAtualizada = service.atualizar(id, empresa);
+
+        return ResponseEntity.ok(mapper.toResponseDTO(empresaAtualizada));
     }
 
     @DeleteMapping("/{id}")

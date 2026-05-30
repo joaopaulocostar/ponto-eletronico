@@ -32,24 +32,11 @@ public class FuncionarioController {
     @PostMapping
     public ResponseEntity<FuncionarioResponseDTO> salvar(@RequestBody @Valid FuncionarioRequestDTO dto){
         Empresa empresa = empresaService.buscarPorId(dto.getEmpresaId());
-        Funcionario funcionario = new Funcionario();
-
-        funcionario.setNome(dto.getNome());
-        funcionario.setCpf(dto.getCpf());
-        funcionario.setCargo(dto.getCargo());
-        funcionario.setEmpresa(empresa);
+        Funcionario funcionario = mapper.toEntity(dto, empresa);
 
         Funcionario funcionarioSalvo = service.salvar(funcionario);
 
-        FuncionarioResponseDTO response = new FuncionarioResponseDTO();
-
-        response.setId(funcionarioSalvo.getId());
-        response.setNome(funcionarioSalvo.getNome());
-        response.setCpf(funcionarioSalvo.getCpf());
-        response.setCargo(funcionarioSalvo.getCargo());
-        response.setEmpresa(funcionarioSalvo.getEmpresa().getNome());
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(mapper.toResponseDTO(funcionarioSalvo));
 
     }
 
@@ -70,8 +57,12 @@ public class FuncionarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Funcionario> atualizar(@PathVariable Long id, @RequestBody @Valid Funcionario funcionario){
-        return ResponseEntity.ok(service.atualizar(id, funcionario));
+    public ResponseEntity<FuncionarioResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid FuncionarioRequestDTO dto){
+        Empresa empresa = empresaService.buscarPorId(id);
+        Funcionario funcionario = mapper.toEntity(dto, empresa);
+        Funcionario funcionarioAtualizado = service.atualizar(id, funcionario);
+
+        return ResponseEntity.ok(mapper.toResponseDTO(funcionarioAtualizado));
     }
 
     @DeleteMapping("/{id}")

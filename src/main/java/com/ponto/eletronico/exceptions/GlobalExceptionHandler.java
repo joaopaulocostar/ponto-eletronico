@@ -13,4 +13,31 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> tratarEmpresaNaoEncontrada(EmpresaNaoEncontradaException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(FuncionarioNaoEncontradoException.class)
+    public ResponseEntity<String> tratarFuncionarioNaoEncontrado(
+            FuncionarioNaoEncontradoException ex){
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CpfJaCadastradoException.class)
+    public ResponseEntity<String> tratarCpfJaCadastrado(
+            CpfJaCadastradoException ex){
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CnpjJaCadastradoException.class)
+    public ResponseEntity<String> tratarCnpjJaCadastrado(
+            CnpjJaCadastradoException ex){
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
 }
